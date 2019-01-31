@@ -55,17 +55,17 @@ svn_details <- function(path_to_repo = NULL){
 }
 
 
-svn_details()
-svn_details("ext/r")
-svn_details("ext/ado")
-svn_details("ext/helper")
-
-svn_details(c("", "ext/r", "ext/ado"))
-
-path_to_repo <- c("", "ext/r", "ext/ado", "ext/helper")
-svn_details(c(path_to_repo, ""))
-
-path_to_repo <- "ext/ado"
+# svn_details()
+# svn_details("ext/r")
+# svn_details("ext/ado")
+# svn_details("ext/helper")
+#
+# svn_details(c("", "ext/r", "ext/ado"))
+#
+# path_to_repo <- c("", "ext/r", "ext/ado", "ext/helper")
+# svn_details(c(path_to_repo, ""))
+#
+# path_to_repo <- "ext/ado"
 
 
 
