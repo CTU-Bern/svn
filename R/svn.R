@@ -10,8 +10,8 @@
 #' @examples
 #' svn_details()
 #'
-#'
 svn_details <- function(path_to_repo = NULL){
+  if(!.svn_exists()) stop("SVN doen't appear to be installed")
   if(is.null(path_to_repo)) path_to_repo <- ""
 
   control <- sapply(path_to_repo, .svn_control)
@@ -88,3 +88,47 @@ svn_details <- function(path_to_repo = NULL){
 }
 # path_to_repo <- "C:\\Users\\haynes\\Documents\\ClinicalStudies/690_PreferenceSensitiveCare_NRP74/21_Statistics_690/stataR_hyst"
 # .svn_control(path_to_repo)
+
+.svn_exists <- function(){
+  return <- try(system("svn", intern = TRUE))
+  class(return) != "try-error"
+}
+
+
+#' Find conflicts in repo
+#'
+#' @param path_to_repo
+#'
+#' @return character vector of conflicts (tree or otherwise)
+#' @export
+#'
+#' @examples
+svn_conflict <- function(path_to_repo = NULL){
+  if(!.svn_exists()) stop("SVN doen't appear to be installed")
+  if(is.null(path_to_repo)) path_to_repo <- ""
+
+  control <- sapply(path_to_repo, .svn_control)
+  if(!any(control)) stop("'path_to_repo' not under SVN control")
+
+  res <- sapply(path_to_repo, function(x) {
+    control <- .svn_control(x)
+    if(control){
+      stat <- paste("svn status", x)
+      stat <- system(stat, intern = TRUE)
+      # changes?
+      status <- substring(stat, 1, 8)
+      conf <- status[grepl("C", status)]
+      txt <- stat[grepl("C", status)]
+
+
+    } else {
+      if(x == "") x <- getwd()
+      txt <- sprintf("Folder %s is not under SVN control", x)
+    }
+    txt
+  })
+
+  return(res)
+
+}
+# svn_conflict()
