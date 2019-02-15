@@ -78,7 +78,7 @@ svn_details <- function(path_to_repo = NULL){
 #'
 .svn_control <- function(path_to_repo = NULL){
   if(is.null(path_to_repo)) path_to_repo <- ""
-  return <- tryCatch(system(paste("svn info", path_to_repo), intern = TRUE))
+  return <- suppressWarnings(tryCatch(system(paste("svn info", path_to_repo), intern = TRUE)))
   if(!is.null(attributes(return)$status)){
     x <- FALSE
   } else {
@@ -90,7 +90,7 @@ svn_details <- function(path_to_repo = NULL){
 # .svn_control(path_to_repo)
 
 .svn_exists <- function(){
-  return <- try(system("svn", intern = TRUE))
+  return <- suppressWarnings(try(system("svn", intern = TRUE)))
   class(return) != "try-error"
 }
 
