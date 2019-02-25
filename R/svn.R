@@ -132,3 +132,47 @@ svn_conflict <- function(path_to_repo = NULL){
 
 }
 # svn_conflict()
+
+#' States of files in repo
+#'
+#' @param path_to_repo
+#'
+#' @return list containing lists of each type of file status
+#' @export
+#'
+#' @examples
+svn_state <- function(path_to_repo = NULL, ignored = FALSE){
+  if(!.svn_exists()) stop("SVN doen't appear to be installed")
+  if(is.null(path_to_repo)) path_to_repo <- ""
+
+  control <- sapply(path_to_repo, .svn_control)
+  if(!any(control)) stop("'path_to_repo' not under SVN control")
+
+  res <- lapply(path_to_repo, function(x){
+    control <- .svn_control(x)
+    if(control){
+      stat <- paste("svn status", x)
+      stat <- system(stat, intern = TRUE)
+
+      status <- substr(stat, 1, 8)
+      txt <- list(add = stat[grepl("A", status)],
+                  delete = stat[grepl("D", status)],
+                  modified = stat[grepl("M", status)],
+                  conflict = stat[grepl("C", status)],
+                  external = stat[grepl("X", status)],
+                  missing = stat[grepl("!", status)],
+                  replaced = stat[grepl("R", status)]
+                  )
+      if(ignored){
+        txt$ignored <- stat[grepl("?", status)]
+      }
+
+    } else {
+      if(x == "") x <- getwd()
+      txt <- sprintf("Folder %s is not under SVN control", x)
+    }
+    txt
+  })
+
+  res
+}
