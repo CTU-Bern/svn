@@ -2,7 +2,7 @@
 
 #' get details on the status of an svn repo
 #'
-#' @param path_to_repo path to the folder whose status to query (if NULL it uses the working directory)
+#' @param path_to_repo path(s) to the folder(s) whose status to query (if NULL it uses the working directory). Can be a vector.
 #'
 #' @return character
 #' @export
@@ -72,7 +72,7 @@ svn_details <- function(path_to_repo = NULL){
 
 #' Check whether a path is under SVN control
 #'
-#' @param path_to_repo
+#' @param path_to_repo path(s) to the folder(s) whose status to query (if NULL it uses the working directory). Can be a vector.
 #'
 #' @return
 #'
@@ -89,6 +89,7 @@ svn_details <- function(path_to_repo = NULL){
 # path_to_repo <- "C:\\Users\\haynes\\Documents\\ClinicalStudies/690_PreferenceSensitiveCare_NRP74/21_Statistics_690/stataR_hyst"
 # .svn_control(path_to_repo)
 
+# internal function to check whether SVN is installed
 .svn_exists <- function(){
   return <- suppressWarnings(try(system("svn", intern = TRUE)))
   class(return) != "try-error"
@@ -97,7 +98,7 @@ svn_details <- function(path_to_repo = NULL){
 
 #' Find conflicts in repo
 #'
-#' @param path_to_repo
+#' @param path_to_repo path(s) to the folder(s) whose status to query (if NULL it uses the working directory). Can be a vector.
 #'
 #' @return character vector of conflicts (tree or otherwise)
 #' @export
@@ -135,9 +136,10 @@ svn_conflict <- function(path_to_repo = NULL){
 
 #' States of files in repo
 #'
-#' @param path_to_repo
+#' @param path_to_repo path(s) to the folder(s) whose status to query (if NULL it uses the working directory). Can be a vector.
+#' @param ignored logical. Return ignored/unversioned files only?
 #'
-#' @return list containing lists of each type of file status
+#' @return list containing lists of each type of file status (e.g. added (\code{add}), deleted (\code{delete}), ...)
 #' @export
 #'
 #' @examples
@@ -172,6 +174,64 @@ svn_state <- function(path_to_repo = NULL, ignored = FALSE){
       txt <- sprintf("Folder %s is not under SVN control", x)
     }
     txt
+  })
+
+  res
+}
+
+
+# svn_log
+#' Log of commits in repository/repositories
+#'
+#' @param path_to_repo path(s) to the folder(s) whose status to query (if NULL it uses the working directory). Can be a vector.
+#'
+#' @return list of dataframes containing repo, revision, user, date, number of lines and commit message
+#' @export
+#'
+#' @examples
+svn_log <- function(path_to_repo = NULL){
+  if(!.svn_exists()) stop("SVN doen't appear to be installed")
+  if(is.null(path_to_repo)) path_to_repo <- ""
+
+  control <- sapply(path_to_repo, .svn_control)
+  if(!any(control)) stop("'path_to_repo' not under SVN control")
+
+  res <- lapply(path_to_repo, function(x){
+    control <- .svn_control(x)
+    if(control){
+      stat <- paste("svn log", x)
+      stat <- system(stat, intern = TRUE)
+      stat <- stat[-length(stat)]
+      w <- grep("--------", stat)
+      info <- stat[w+1]
+      s <- strsplit(info, " | ", fixed = TRUE)
+      rev <- sapply(s, "[", 1)
+      user <- sapply(s, "[", 2)
+      date <- sapply(s, "[", 3)
+      date <- as.POSIXct(substr(date, 1, 19), format = "%Y-%m-%d %H:%M:%S")
+      lines <- sapply(s, "[", 4)
+      txt <- lapply(w, function(x){
+        y <- min(min(w[w > x])-1, length(stat), na.rm = TRUE)
+        stat[(x+3):y]
+      })
+      txt <- sapply(txt, paste, collapse = "\n")
+      out <- data.frame(repo = x,
+                 rev = rev,
+                 user = user,
+                 date = date,
+                 lines = lines,
+                 txt = txt)
+
+      } else {
+      if(x == "") x <- getwd()
+      txt <- sprintf("Folder %s is not under SVN control", x)
+      out <- data.frame(repo = x,
+                        rev = NA,
+                        user = NA,
+                        date = NA,
+                        txt = txt)
+    }
+    out
   })
 
   res
