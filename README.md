@@ -1,5 +1,5 @@
 # svn
-Interface between R and SVN to get info on repo status
+Interface between R and SVN to get info on repo status.
 
 ## Installation
 ``` R
@@ -26,6 +26,8 @@ svn_state()
 svn_state(ignored = TRUE)
 # return a list of conflicted files
 svn_conflict()
+# the log
+svn_log()
 ```
 The functions also allow multiple repositories to be queried simultaneously (useful for e.g. externals).
 ``` R
@@ -38,6 +40,8 @@ svn_state(repos)
 svn_state(repos, ignored = TRUE)
 # return a list of conflicted files
 svn_conflict(repos)
+# the log
+svn_log(repos)
 ```
 
 

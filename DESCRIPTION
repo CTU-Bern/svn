@@ -4,9 +4,8 @@ Title: Interface Between SVN and R
 Version: 0.1.0
 Author: Alan Haynes
 Maintainer: Alan Haynes <aghaynes@gmail.com>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: GNU GPL v3
+Description: Get information on SVN repositories through R. Explore file status, commit logs etc.
+License: MIT
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
