@@ -7,7 +7,7 @@
 svn_details(path_to_repo = NULL)
 }
 \arguments{
-\item{path_to_repo}{path to the folder whose status to query (if NULL it uses the working directory)}
+\item{path_to_repo}{path(s) to the folder(s) whose status to query (if NULL it uses the working directory). Can be a vector.}
 }
 \value{
 character
@@ -16,7 +16,6 @@ character
 get details on the status of an svn repo
 }
 \examples{
-svn_details()
-
+# svn_details()
 
 }

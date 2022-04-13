@@ -1,5 +1,3 @@
-
-
 #' get details on the status of an svn repo
 #'
 #' @param path_to_repo path(s) to the folder(s) whose status to query (if NULL it uses the working directory). Can be a vector.
@@ -8,7 +6,7 @@
 #' @export
 #'
 #' @examples
-#' svn_details()
+#' # svn_details()
 #'
 svn_details <- function(path_to_repo = NULL){
   if(!.svn_exists()) stop("SVN doen't appear to be installed")
@@ -104,6 +102,7 @@ svn_details <- function(path_to_repo = NULL){
 #' @export
 #'
 #' @examples
+#' # svn_conflict(path_to_some_repo)
 svn_conflict <- function(path_to_repo = NULL){
   if(!.svn_exists()) stop("SVN doen't appear to be installed")
   if(is.null(path_to_repo)) path_to_repo <- ""
@@ -143,6 +142,7 @@ svn_conflict <- function(path_to_repo = NULL){
 #' @export
 #'
 #' @examples
+#' # svn_state(path_to_some_repo)
 svn_state <- function(path_to_repo = NULL, ignored = FALSE){
   if(!.svn_exists()) stop("SVN doen't appear to be installed")
   if(is.null(path_to_repo)) path_to_repo <- ""
@@ -189,6 +189,7 @@ svn_state <- function(path_to_repo = NULL, ignored = FALSE){
 #' @export
 #'
 #' @examples
+#' # svn_log(path_to_some_repo)
 svn_log <- function(path_to_repo = NULL){
   if(!.svn_exists()) stop("SVN doen't appear to be installed")
   if(is.null(path_to_repo)) path_to_repo <- ""
@@ -235,4 +236,49 @@ svn_log <- function(path_to_repo = NULL){
   })
 
   res
+}
+
+#' Get SVN revision number
+#'
+#' @param path_to_repo path to repo(s)
+#'
+#' @return number or list of numbers
+#' @export
+#'
+#' @examples
+#' # svn_revnum(path_to_some_repo)
+svn_revnum <- function(path_to_repo = NULL){
+  if(!.svn_exists()) stop("SVN doen't appear to be installed")
+  if(is.null(path_to_repo)) path_to_repo <- ""
+
+  control <- sapply(path_to_repo, .svn_control)
+  if(!any(control)) stop("'path_to_repo' not under SVN control")
+
+  if(length(path_to_repo) > 1){
+
+    res <- lapply(path_to_repo, function(x){
+      control <- .svn_control(x)
+      if(control){
+        .revnum(x)
+
+      } else {
+        rev_no <- NA
+      }
+      rev_no
+    })
+  } else {
+    res <- .revnum(x)
+  }
+  res
+}
+
+.revnum <- function(x){
+  info <- paste("svn info", x)
+  info <- system(info, intern = TRUE)
+  if(x == "") x <- getwd()
+
+  # identify revision
+  ss <- unlist(strsplit(info[grepl("^Revision", info)], ":"))
+  rev_no <- as.numeric(trimws(ss[length(ss)]))
+  rev_no
 }

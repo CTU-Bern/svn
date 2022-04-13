@@ -15,8 +15,10 @@ devtools::document(".")
 # devtools::test(".") # tests not really possible as not transferrable to other machines
 devtools::install()
 ```
+*NOTE: due to external software requirements (SVN and a suitable repo), examples do not work and the package is not fully tested*
 
 ## Usage
+
 ``` R
 # return details of current wirking directory in a format that could be used in a report
 svn_details()
@@ -29,7 +31,9 @@ svn_conflict()
 # the log
 svn_log()
 ```
+
 The functions also allow multiple repositories to be queried simultaneously (useful for e.g. externals).
+
 ``` R
 repos <- c("path_to_repo1", "path_to_repo2", "path_to_repo3")
 # return details of current wirking directory
@@ -43,5 +47,4 @@ svn_conflict(repos)
 # the log
 svn_log(repos)
 ```
-
 
