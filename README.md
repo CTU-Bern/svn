@@ -6,7 +6,7 @@ Interface between R and SVN to get info on repo status.
 # if you do not have devtools installed
 # install.packages("devtools", dependencies=TRUE)
 # install svn package
-devtools::install_github("aghaynes/svn")
+devtools::install_github("CTU-Bern/svn")
 ```
 
 ## Testing/Development 
