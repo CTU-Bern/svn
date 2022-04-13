@@ -30,6 +30,8 @@ svn_state(ignored = TRUE)
 svn_conflict()
 # the log
 svn_log()
+# revision number
+svn_revnum()
 ```
 
 The functions also allow multiple repositories to be queried simultaneously (useful for e.g. externals).
@@ -46,5 +48,7 @@ svn_state(repos, ignored = TRUE)
 svn_conflict(repos)
 # the log
 svn_log(repos)
+# revision number
+svn_revnum(repos)
 ```
 
