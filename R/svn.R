@@ -267,12 +267,12 @@ svn_revnum <- function(path_to_repo = NULL){
       rev_no
     })
   } else {
-    res <- .revnum(x)
+    res <- .revnum(path_to_repo)
   }
   res
 }
 
-.revnum <- function(x){
+.revnum <- function(x = ""){
   info <- paste("svn info", x)
   info <- system(info, intern = TRUE)
   if(x == "") x <- getwd()

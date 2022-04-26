@@ -1,3 +1,7 @@
+# svn 0.3.0
+
+* bug fix in `svn_revnum` where there's only one path
+
 # svn 0.2.0
 
 * Added a `NEWS.md` file to track changes to the package.
