@@ -72,7 +72,8 @@ svn_details <- function(path_to_repo = NULL){
 #'
 #' @param path_to_repo path(s) to the folder(s) whose status to query (if NULL it uses the working directory). Can be a vector.
 #'
-#' @return
+#' @return logical
+#' @noRd
 #'
 .svn_control <- function(path_to_repo = NULL){
   if(is.null(path_to_repo)) path_to_repo <- ""
@@ -241,6 +242,7 @@ svn_log <- function(path_to_repo = NULL){
 #' Get SVN revision number
 #'
 #' @param path_to_repo path to repo(s)
+#' @param update perform an svn update before getting the revision number?
 #'
 #' @return number or list of numbers
 #' @export

@@ -4,10 +4,12 @@
 \alias{svn_revnum}
 \title{Get SVN revision number}
 \usage{
-svn_revnum(path_to_repo = NULL)
+svn_revnum(path_to_repo = NULL, update = TRUE)
 }
 \arguments{
 \item{path_to_repo}{path to repo(s)}
+
+\item{update}{perform an svn update before getting the revision number?}
 }
 \value{
 number or list of numbers
