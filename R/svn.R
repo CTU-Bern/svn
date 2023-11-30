@@ -247,7 +247,7 @@ svn_log <- function(path_to_repo = NULL){
 #'
 #' @examples
 #' # svn_revnum(path_to_some_repo)
-svn_revnum <- function(path_to_repo = NULL){
+svn_revnum <- function(path_to_repo = NULL, update = TRUE){
   if(!.svn_exists()) stop("SVN doen't appear to be installed")
   if(is.null(path_to_repo)) path_to_repo <- ""
 
@@ -256,9 +256,14 @@ svn_revnum <- function(path_to_repo = NULL){
 
   if(length(path_to_repo) > 1){
 
+
     res <- lapply(path_to_repo, function(x){
       control <- .svn_control(x)
       if(control){
+        if(update){
+          update_cmd <- paste("svn update", x)
+          system(update_cmd, intern = TRUE)
+        }
         .revnum(x)
 
       } else {
@@ -267,6 +272,11 @@ svn_revnum <- function(path_to_repo = NULL){
       rev_no
     })
   } else {
+
+    if(update){
+      update_cmd <- paste("svn update", path_to_repo)
+      system(update_cmd, intern = TRUE)
+    }
     res <- .revnum(path_to_repo)
   }
   res
