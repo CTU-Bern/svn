@@ -1,3 +1,7 @@
+# svn 0.4.0
+
+* `svn_revnum` now (optionally) performs `svn update` before getting the revision number (commits alone do not update version number in the local repo database)
+
 # svn 0.3.0
 
 * bug fix in `svn_revnum` where there's only one path
